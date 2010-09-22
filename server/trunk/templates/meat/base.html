@@ -1,0 +1,18 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}{{ _('Meat') }} - {{ sitename }}{% endblock %}
+
+{% block head_extra -%}
+    <link rel="stylesheet" type="text/css" href="/static/default/styles/meat.css">
+{%- endblock %}
+
+{% block body_id %}meat{% endblock %}
+
+{% block sidebar %}
+	Sidebar
+{% endblock %}
+
+{% block body_extra %}
+    {{ super() }}
+<!--    <script type="text/javascript" src="/static/default/scripts/meat.js"></script>-->
+{% endblock %}

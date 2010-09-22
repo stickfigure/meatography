@@ -10,14 +10,18 @@ config['tipfy'] = {
     # Enable debugger. It will be loaded only in development.
     'middleware': [
         'tipfy.ext.debugger.DebuggerMiddleware',
+        'tipfy.ext.appstats.AppstatsMiddleware',
+
     ],
     # Set the active apps.
     'apps_installed': [
         'moe.users',
         'moe.wiki',
+        'meat',
     ],
     # Set base paths for apps.
     'apps_entry_points': {
+        'meat':  '/meat',
         'moe.wiki':  '/wiki',
     },
 }
