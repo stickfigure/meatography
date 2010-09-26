@@ -20,6 +20,7 @@ import ow
 import ConfigParser
 
 # The defaults - change your local settings in a meatography.cfg file
+cfg_filename = "meatography.cfg"
 cfg_section = "meatography"
 cfg_owserver_param = "owserver"
 cfg_server_url_param = "server_url"
@@ -59,6 +60,7 @@ def get_humidity_sensor():
 # Let the program continue
 #
 cfg = ConfigParser.ConfigParser(cfg_defaults)
+cfg.read(cfg_filename)
 ow.init(cfg.get(cfg_section, cfg_owserver_param))
 tempSensor = get_temp_sensor()
 humiditySensor = get_humidity_sensor()
