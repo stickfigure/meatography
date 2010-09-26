@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
+from moe.base.models import Area
+from pickle import NONE
+from tipfy import HTTPException, RequestHandler, Response, Tipfy, abort, \
+    get_config, import_string, url_for
+from tipfy.ext import auth, i18n, jinja2, session
 import logging
 
-from tipfy import (HTTPException, RequestHandler, Response, Tipfy, abort,
-    get_config, import_string, url_for)
-from tipfy.ext import i18n
-from tipfy.ext import jinja2
-from tipfy.ext import session
-from tipfy.ext import auth
 
-from moe.base.models import Area
 
 
 class AreaRequestHandler(RequestHandler, session.AllSessionMixins,
@@ -25,11 +23,6 @@ class AreaRequestHandler(RequestHandler, session.AllSessionMixins,
         self.current_user = self.auth_current_user
 
         area_name = self.get_area_name()
-        if area_name not in ('docs', 'www'):
-            # TODO instead of 404, redirect to a page to create the area,
-            # if the are doesn't exist.
-            # For now, only 404 is allowed.
-            abort(404)
 
         self.area = Area.get_by_key_name(area_name)
         if self.area is None:
@@ -82,15 +75,37 @@ class AreaRequestHandler(RequestHandler, session.AllSessionMixins,
 
         self.set_message('error', body, title=title, life=None)
 
+    def get_arae_name_by_request(self):
+        name = None
+        host = self.request.host.split(':', 1)[0]
+        assert isinstance(host, basestring)
+        server_name = get_config('tipfy', 'server_name', '')
+        area_from_subdomain = get_config('moe', 'subdomain_as_area', False)
+        use_subdomain = get_config('moe', 'use_subdomain', not area_from_subdomain)
+
+        if area_from_subdomain:
+            name = host
+        else:
+            if use_subdomain:
+                if server_name:
+                    domain = server_name.split(':', 1)[0]
+                    name = host[:-len(domain) - 1]
+                else:
+                    parts = host.split(".")
+                    if len(parts[len(parts)-1]) == 3:
+                        name = host[:-len(parts[0])-len(parts[1]) - 1]
+                    else:
+                        name = host
+
+        return name
+    
     def get_area_name(self):
         if self.request.rule_args:
-            name = self.request.rule_args.get('area_name', 'www')
+            name = self.request.rule_args.get('area_name', None)
+            if not name:
+                name = self.get_arae_name_by_request()
         else:
-            # For when no rule is set.
-            #host = request.host.split(':', 1)[0]
-            #domain = get_config('tipfy', 'server_name', '').split(':', 1)[0]
-            #name = host[:-len(domain) - 1]
-            name = 'www'
+            name = "www"
 
         return name
 

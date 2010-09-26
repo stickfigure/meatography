@@ -37,9 +37,8 @@ def get_rules():
     # the wiki operation. Everything else is considered a wiki content page.
     protected_path = '/' + get_config('moe.wiki', 'protected_path')
 
-    # Take the area name from the subdomain if they are in use. Otherwise
-    # assume that this will be used in a single domain.
-    if get_config('moe', 'use_subdomain', False):
+    # Take the area name from the subdomain if they are in use.
+    if get_config('moe', 'use_subdomain', False) or get_config('moe', 'subdomain_as_area', False):
         kwargs = {'subdomain': '<area_name>'}
     else:
         kwargs = {'defaults': {'area_name': 'www'}}

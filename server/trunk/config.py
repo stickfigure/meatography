@@ -38,4 +38,5 @@ config['moe'] = {
     'admin_email':    'scotthernandez@gmail.com',
     'analytics_code': 'UA-18585999-1',
     'use_subdomain':  False,
+    'subdomain_as_area':  True,
 }
