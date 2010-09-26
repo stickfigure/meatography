@@ -27,7 +27,7 @@ cfg_server_url_param = "server_url"
 cfg_cabinet_id_param = "cabinet_id"
 cfg_defaults = {
 			cfg_owserver_param: "localhost:4304",
-			cfg_server_url_param: "http://www.meatography.com/submit"
+			cfg_server_url_param: "http://www.meatography.com/meat/submit"
 			}
 
 # Log if you want it
