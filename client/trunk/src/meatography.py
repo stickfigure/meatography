@@ -36,7 +36,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 #
 def get_temp_sensor():
 	#return ow.Sensor("/10.FF09E6010800")
-	tempSensors = ow.Sensor("/").find(family="10")
+	tempSensors = list(ow.Sensor("/").find(family="10"))
 	if not tempSensors:
 		raise Exception, "Unable to find temperature sensor"
 	elif len(tempSensors) > 1:
@@ -47,7 +47,7 @@ def get_temp_sensor():
 #
 def get_humidity_sensor():
 	#return ow.Sensor("/26.C9C9F1000000")
-	humiditySensors = ow.Sensor("/").find(family="26")
+	humiditySensors = list(ow.Sensor("/").find(family="26"))
 	if not humiditySensors:
 		raise Exception, "Unable to find humidity sensor"
 	elif len(humiditySensors) > 1:
