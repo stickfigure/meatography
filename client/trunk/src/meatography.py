@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #
 # Script which controlls a meatography cabinet, submitting temperature and humidity values
 # to a server and actuating control devices to maintain stable values.
