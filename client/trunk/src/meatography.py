@@ -5,13 +5,15 @@
 #
 # This script should be run from cron once per minute.
 #
-# It reads a config file called meatography.cfg which is expected to look like this:
+# The first parameter is expected to be a config file which is expected to look like this:
 #
 # [meatography]
 # cabinet_id=nameOfYourCabinet	# name of your cabinet in the server
 # owserver=localhost:4304	# how to access the onewire server; could be "u" for usb directly
 # server_url=http://www.meatography.com/submit	# url of the server
+#
 
+import sys
 import urllib
 import urllib2
 import logging
@@ -21,7 +23,6 @@ import ow
 import ConfigParser
 
 # The defaults - change your local settings in a meatography.cfg file
-cfg_filename = "meatography.cfg"
 cfg_section = "meatography"
 cfg_owserver_param = "owserver"
 cfg_server_url_param = "server_url"
@@ -61,7 +62,7 @@ def get_humidity_sensor():
 # Let the program continue
 #
 cfg = ConfigParser.ConfigParser(cfg_defaults)
-cfg.read(cfg_filename)
+cfg.read(sys.argv[1])
 ow.init(cfg.get(cfg_section, cfg_owserver_param))
 tempSensor = get_temp_sensor()
 humiditySensor = get_humidity_sensor()
