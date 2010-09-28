@@ -7,8 +7,8 @@ sect = "meatography"
 cfg_defaults = {
 			"owserver": "localhost:4304",
 			"server_url": "http://www.meatography.com/meat/submit",
-			"temp_margin": 2,
-			"humidity_margin": 2
+			"temp_margin": "2",
+			"humidity_margin": "2"
 			}
 cfg = ConfigParser.ConfigParser(cfg_defaults)
 cfg.read(sys.argv[1])
@@ -17,5 +17,5 @@ cfg.read(sys.argv[1])
 OWSERVER = cfg.get(sect, "owserver")
 SERVER_URL = cfg.get(sect, "server_url")
 CABINET_ID = cfg.get(sect, "cabinet_id")
-TEMP_MARGIN = float(cfg.get(sect, "temp_margin"))
-HUMIDITY_MARGIN = float(cfg.get(sect, "humidity_margin"))
+TEMP_MARGIN = cfg.getfloat(sect, "temp_margin")
+HUMIDITY_MARGIN = cfg.getfloat(sect, "humidity_margin")
