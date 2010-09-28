@@ -12,76 +12,42 @@
 # owserver=localhost:4304	# how to access the onewire server; could be "u" for usb directly
 # server_url=http://www.meatography.com/submit	# url of the server
 #
+# More config values can be found in the config.py file.
 
-import sys
 import urllib
 import urllib2
 import logging
 import datetime
 import time
-import ow
-import ConfigParser
-
-# The defaults - change your local settings in a meatography.cfg file
-cfg_section = "meatography"
-cfg_owserver_param = "owserver"
-cfg_server_url_param = "server_url"
-cfg_cabinet_id_param = "cabinet_id"
-cfg_defaults = {
-			cfg_owserver_param: "localhost:4304",
-			cfg_server_url_param: "http://www.meatography.com/meat/submit"
-			}
+import json
+import hardware
+import config
 
 # Log if you want it
 logging.getLogger().setLevel(logging.DEBUG)
 
-#
-def get_temp_sensor():
-	#return ow.Sensor("/10.FF09E6010800")
-	tempSensors = list(ow.Sensor("/").find(family="10"))
-	if not tempSensors:
-		raise Exception, "Unable to find temperature sensor"
-	elif len(tempSensors) > 1:
-		raise Exception, "Too many temperature sensors on bus"
-	else:
-		return tempSensors[0]
-
-#
-def get_humidity_sensor():
-	#return ow.Sensor("/26.C9C9F1000000")
-	humiditySensors = list(ow.Sensor("/").find(family="26"))
-	if not humiditySensors:
-		raise Exception, "Unable to find humidity sensor"
-	elif len(humiditySensors) > 1:
-		raise Exception, "Too many humidity sensors on bus"
-	else:
-		return humiditySensors[0]
-
-	
-#
-# Let the program continue
-#
-cfg = ConfigParser.ConfigParser(cfg_defaults)
-cfg.read(sys.argv[1])
-ow.init(cfg.get(cfg_section, cfg_owserver_param))
-tempSensor = get_temp_sensor()
-humiditySensor = get_humidity_sensor()
-
 # Get the real values
-temp = float(tempSensor.temperature)
-humidity = float(humiditySensor.humidity)
+temp = hardware.get_temp()
+humidity = hardware.get_humidity()
 
-logging.info(u"Temperature is {0}\u00b0C".format(temp))
-logging.info(u"Humidity is {0}%".format(humidity))
+logging.info(u"{0}\u00b0C, {1}% humidity".format(temp, humidity))
 
 # Make the call to the server
 params = {}
 params["ver"] = 1
-params["cid"] = cfg.get(cfg_section, cfg_cabinet_id_param)
+params["cid"] = config.CABINET_ID
 params["when"] = time.mktime(datetime.datetime.now().timetuple()) * 1000	# java time format
 params["temp"] = temp
 params["humidity"] = humidity
 
 encoded_params = urllib.urlencode(params)
 
-response = urllib2.urlopen(cfg.get(cfg_section, cfg_server_url_param), encoded_params)
+raw_response = urllib2.urlopen(config.SERVER_URL, encoded_params)
+response = json.load(raw_response)
+
+temp_target = float(response['tempTarget'])
+humidity_target = float(response['humidityTarget'])
+
+hardware.seek_goals(temp, humidity, temp_target, humidity_target)
+
+
