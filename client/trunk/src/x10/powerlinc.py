@@ -79,7 +79,7 @@ class PowerLincSerial(x10.Controller):
 		
 	def make_ready(self):
 		while True:
-			self.write(PowerLincSerial.START)
+			self.writeByte(PowerLincSerial.START)
 			byte = self.readByte()
 			
 			if byte == PowerLincSerial.ACK:
@@ -89,12 +89,12 @@ class PowerLincSerial(x10.Controller):
 				# Just continue the loop
 				pass
 			else:
-				raise Exception, "Read unexpected byte " + hex(byte)
+				raise Exception, "Read unexpected byte " + str(byte)
 		
 	def writeByte(self, byte):
 		"""Write one byte"""
-		self.serial.write(byte)
+		self.serial.write(bytes(byte))
 			
 	def readByte(self):
 		"""Read one byte"""
-		return self.serial.read()		
+		return self.serial.read()[0]
