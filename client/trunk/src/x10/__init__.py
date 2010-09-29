@@ -7,7 +7,7 @@ def enum(*sequential, **named):
 	enums = dict(zip(sequential, sequential), **named)
 	return type('Enum', (), enums)
 	
-Cmd = enum([
+Cmd = enum(
 	"ALL_UNITS_OFF",
 	"ALL_LIGHTS_ON",
 	"ON",
@@ -22,7 +22,7 @@ Cmd = enum([
 	"EXTENDED_DATA",
 	"STATUS_ON",
 	"STATUS_OFF",
-	"STATUS_REQUEST"])
+	"STATUS_REQUEST")
 
 class Controller(object):
 	"""Base class for all X10 controllers, defines the pattern that must be overriden"""
