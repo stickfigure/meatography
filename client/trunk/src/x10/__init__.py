@@ -11,7 +11,7 @@ Cmd = enum(
 	"ALL_UNITS_OFF",
 	"ALL_LIGHTS_ON",
 	"ON",
-	"OFF"	
+	"OFF",
 	"DIM",
 	"BRIGHT",
 	"ALL_LIGHTS_OFF",
