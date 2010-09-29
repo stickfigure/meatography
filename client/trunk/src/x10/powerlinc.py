@@ -89,7 +89,7 @@ class PowerLincSerial(x10.Controller):
 				# Just continue the loop
 				pass
 			else:
-				raise Exception, "Read unexpected byte 0x" + byte.encode('hex')
+				raise Exception, "Read unexpected byte 0x" + hex(byte)
 		
 	def writeByte(self, byte):
 		"""Write one byte"""
@@ -101,4 +101,4 @@ class PowerLincSerial(x10.Controller):
 		if len(result) == 0:
 			raise Exception, "Timeout reading from serial"
 		else:
-			return result[0]
+			return ord(result[0])
