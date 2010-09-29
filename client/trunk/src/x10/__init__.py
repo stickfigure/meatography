@@ -4,7 +4,7 @@ General pieces for controlling X10 components.
 
 def enum(*sequential, **named):
 	"""Python sucks for not having an enum"""
-	enums = dict(zip(sequential, sequential, **named))
+	enums = dict(zip(sequential, sequential), **named)
 	return type('Enum', (), enums)
 	
 Cmd = enum([
