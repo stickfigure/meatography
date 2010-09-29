@@ -89,7 +89,7 @@ class PowerLincSerial(x10.Controller):
 				# Just continue the loop
 				pass
 			else:
-				raise Exception, "Read unexpected byte " + str(byte)
+				raise Exception, "Read unexpected byte 0x" + byte.encode('hex')
 		
 	def writeByte(self, byte):
 		"""Write one byte"""
