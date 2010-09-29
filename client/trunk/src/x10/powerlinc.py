@@ -97,4 +97,8 @@ class PowerLincSerial(x10.Controller):
 			
 	def readByte(self):
 		"""Read one byte"""
-		return self.serial.read()[0]
+		result = self.serial.read()
+		if len(result) == 0:
+			raise Exception, "Timeout reading from serial"
+		else:
+			return result[0]
