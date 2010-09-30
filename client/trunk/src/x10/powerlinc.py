@@ -3,6 +3,17 @@ import logging
 import x10
 
 
+def test(tty):
+	serial = serial.Serial(tty, 9600, timeout=10)
+	serial.write(bytes(0x02))
+	
+	result = serial.read()
+	if len(result) == 0:
+		raise Exception, "Timeout reading from serial"
+	else:
+		return ord(result[0])
+	
+
 class PowerLincSerial(x10.Controller):
 	"""Controller for the 1132B PowerLinc Serial device"""
 	HOUSE_CODES = dict(
