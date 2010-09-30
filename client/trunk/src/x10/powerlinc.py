@@ -1,4 +1,5 @@
 import serial
+import logging
 import x10
 
 
@@ -87,7 +88,7 @@ class PowerLincSerial(x10.Controller):
 				return
 			elif byte == PowerLincSerial.NAK:
 				# Just continue the loop
-				pass
+				logging.error("Got NAK")
 			else:
 				raise Exception, "Read unexpected byte " + hex(byte)
 		
