@@ -11,7 +11,7 @@ def test(tty):
 	if len(result) == 0:
 		raise Exception, "Timeout reading from serial"
 	else:
-		return ord(result[0])
+		return hex(ord(result[0]))
 	
 
 class PowerLincSerial(x10.Controller):
