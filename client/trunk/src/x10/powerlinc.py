@@ -23,7 +23,7 @@ class PowerLincSerial(x10.Controller):
 		E=0x01, F=0x09, G=0x05, H=0x0d,
 		I=0x07, J=0x0f, K=0x03, L=0x0b,
 		M=0x00, N=0x08, O=0x04, P=0x0c)
-	HOUSE_CODES = [(key, code|0x40) for key, code in HOUSE_CODES.iteritems()]
+	HOUSE_CODES = dict([(key, code|0x40) for key, code in HOUSE_CODES.iteritems()])
 	
 	# All raw x10 values get or'd with 0x40 for sending to PowerLinc
 	UNIT_CODES = [
