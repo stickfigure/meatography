@@ -4,10 +4,10 @@ import x10
 
 
 def test(tty):
-	serial = serial.Serial(tty, 9600, timeout=10)
-	serial.write(bytes(0x02))
+	port = serial.Serial(tty, 9600, timeout=10)
+	port.write(bytes(0x02))
 	
-	result = serial.read()
+	result = port.read()
 	if len(result) == 0:
 		raise Exception, "Timeout reading from serial"
 	else:
