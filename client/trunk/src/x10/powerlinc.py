@@ -91,11 +91,23 @@ class PowerLincSerial(x10.Controller):
 		tosend = ''.join([chr(b) for b in tosend])
 		self.serial.write(tosend)
 		
+		self.read_received()
+		
+		self.serial.close()
+		
+	def read_received(self):
+		"""Read the weird two messages off the wire"""
 		result = self.readByte()
 		if result != PowerLincSerial.RECEIVED:
 			raise Exception, "Instead of RECEIVED got " + hex(result)
+
+		# read off two lines of crap		
+		read = None
+		while read != PowerLincSerial.CR:
+			read = self.readByte()
+		while read != PowerLincSerial.CR:
+			read = self.readByte()
 		
-		self.serial.close()
 		
 	def make_ready(self):
 		tries = 0
