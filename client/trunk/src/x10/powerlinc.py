@@ -16,19 +16,25 @@ def test(tty):
 
 class PowerLincSerial(x10.Controller):
 	"""Controller for the 1132B PowerLinc Serial device"""
+	
+	# All raw x10 values get or'd with 0x40 for sending to PowerLinc
 	HOUSE_CODES = dict(
 		A=0x06, B=0x0e, C=0x02, D=0x0a,
 		E=0x01, F=0x09, G=0x05, H=0x0d,
 		I=0x07, J=0x0f, K=0x03, L=0x0b,
 		M=0x00, N=0x08, O=0x04, P=0x0c)
+	HOUSE_CODES = [(key, code|0x40) for key, code in HOUSE_CODES.iteritems()]
 	
+	# All raw x10 values get or'd with 0x40 for sending to PowerLinc
 	UNIT_CODES = [
 		0x00,	# a placeholder, there is no unit 0
 		0x0c, 0x1c, 0x04, 0x14,
 		0x02, 0x12, 0x0a, 0x1a,
 		0x0e, 0x1e, 0x06, 0x16,
 		0x00, 0x10, 0x08, 0x18]
+	UNIT_CODES = [code|0x40 for code in UNIT_CODES]
 		
+	# All raw x10 values get or'd with 0x40 for sending to PowerLinc
 	COMMAND_CODES = {
 		x10.Cmd.ALL_UNITS_OFF: 0x01,
 		x10.Cmd.ALL_LIGHTS_ON: 0x03,
@@ -47,6 +53,7 @@ class PowerLincSerial(x10.Controller):
 		x10.Cmd.STATUS_REQUEST: 0x1f,
 		"unknown": 0x13
 	}
+	COMMAND_CODES = [(key, code|0x40) for key, code in COMMAND_CODES.iteritems()]
 	
 	# codes
 	START = 0x02
