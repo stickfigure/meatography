@@ -88,8 +88,8 @@ class PowerLincSerial(x10.Controller):
 			command_code = 0x0
 		
 		tosend = [PowerLincSerial.SEND, house_code, unit_code, command_code, PowerLincSerial.REPEAT_ONCE]
-		for byte in tosend:
-			self.writeByte(byte)
+		tosend = ''.join([chr(b) for b in tosend])
+		self.serial.write(tosend)
 		
 		result = self.readByte()
 		if result != PowerLincSerial.RECEIVED:
