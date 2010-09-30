@@ -5,7 +5,7 @@ import x10
 
 def test(tty):
 	port = serial.Serial(tty, 9600, timeout=10)
-	port.write(bytes(0x02))
+	port.write(chr(0x02))
 	
 	result = port.read()
 	if len(result) == 0:
@@ -87,8 +87,9 @@ class PowerLincSerial(x10.Controller):
 			unit_code = command_code
 			command_code = 0x0
 		
-		tosend = [PowerLincSerial.START, house_code, unit_code, command_code, PowerLincSerial.REPEAT_ONCE]
-		self.serial.write(tosend)
+		tosend = [PowerLincSerial.SEND, house_code, unit_code, command_code, PowerLincSerial.REPEAT_ONCE]
+		for byte in tosend:
+			self.writeByte(byte)
 		
 		result = self.readByte()
 		if result != PowerLincSerial.RECEIVED:
@@ -116,7 +117,7 @@ class PowerLincSerial(x10.Controller):
 		
 	def writeByte(self, byte):
 		"""Write one byte"""
-		self.serial.write(bytes(byte))
+		self.serial.write(chr(byte))
 			
 	def readByte(self):
 		"""Read one byte"""
