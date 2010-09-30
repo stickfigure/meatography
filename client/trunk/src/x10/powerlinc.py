@@ -79,6 +79,7 @@ class PowerLincSerial(x10.Controller):
 		self.serial.close()
 		
 	def make_ready(self):
+		tries = 0
 		while True:
 			self.writeByte(PowerLincSerial.START)
 			byte = self.readByte()
@@ -87,8 +88,11 @@ class PowerLincSerial(x10.Controller):
 				self.readByte() # toss the cr
 				return
 			elif byte == PowerLincSerial.NAK:
-				# Just continue the loop
-				logging.error("Got NAK")
+				if tries > 5:
+					raise Exception, "Too many NAK responses"
+				else:
+					tries += 1
+					logging.error("Got NAK")
 			else:
 				raise Exception, "Read unexpected byte " + hex(byte)
 		
