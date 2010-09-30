@@ -53,7 +53,7 @@ class PowerLincSerial(x10.Controller):
 		x10.Cmd.STATUS_REQUEST: 0x1f,
 		"unknown": 0x13
 	}
-	COMMAND_CODES = [(key, code|0x40) for key, code in COMMAND_CODES.iteritems()]
+	COMMAND_CODES = dict([(key, code|0x40) for key, code in COMMAND_CODES.iteritems()])
 	
 	# codes
 	START = 0x02
