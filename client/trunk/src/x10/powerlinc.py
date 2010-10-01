@@ -6,6 +6,7 @@ import x10
 
 def test(tty):
 	port = serial.Serial(tty, 9600, timeout=10)
+	port.open()
 	port.write(chr(0x02))
 	
 	result = port.read()
