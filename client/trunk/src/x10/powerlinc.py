@@ -1,5 +1,6 @@
 import serial
 import logging
+import time
 import x10
 
 
@@ -101,6 +102,7 @@ class PowerLincSerial(x10.Controller):
 		if result != PowerLincSerial.RECEIVED:
 			raise Exception, "Instead of RECEIVED got " + hex(result)
 
+		time.sleep(0.5)
 		self.serial.flushInput()
 		
 	def make_ready(self):
