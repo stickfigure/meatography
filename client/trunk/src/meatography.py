@@ -48,6 +48,7 @@ response = json.load(raw_response)
 temp_target = float(response['tempTarget'])
 humidity_target = float(response['humidityTarget'])
 
-hardware.seek_goals(temp, humidity, temp_target, humidity_target)
+ctl = hardware.Controller()
+ctl.seek_goals(temp, humidity, temp_target, humidity_target)
 
 

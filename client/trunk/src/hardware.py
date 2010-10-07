@@ -1,6 +1,12 @@
-import ow
 import config
 import logging
+import ow
+import util
+import x10
+import x10.powerlinc
+
+# We must init the onewire system
+ow.init(config.OWSERVER)
 
 #
 def get_temp():
@@ -31,70 +37,58 @@ def get_humidity():
 	return float(get_humidity_sensor().humidity)
 
 #
-def is_cooler_on():
-	"""Return the current status of the cooler device"""
-	return False
+Direction = util.enum("UP", "DOWN", "OFF")
 
 #
-def is_heater_on():
-	"""Return the current status of the heater device"""
-	return False
-
-#
-def is_humidifier_on():
-	"""Return the current status of the humidifier device"""
-	return False
-
-#
-def is_dehumidifier_on():
-	"""Return the current status of the dehumidifier device"""
-	return False
-
-#
-def humidify(on):
-	"""Switch the humidifier on or off"""
-	logging.debug("Humidifier: " + str(on))
-
-#
-def dehumidify(on):
-	"""Switch the dehumidifier on or off"""
-	logging.debug("Dehumidifier: " + str(on))
-	
-#
-def cool(on):
-	"""Switch the cooler on or off"""
-	logging.debug("Cooler: " + str(on))
-	
-#
-def heat(on):
-	"""Switch the heater on or off"""
-	logging.debug("Heater: " + str(on))
-	
-#
-def seek_goals(temp, humidity, temp_target, humidity_target):
-	"""
-	Actually do something about it.
-	For the moment this will be a very dumb system.
-	"""
-	if temp + config.TEMP_MARGIN > temp_target:
-		heat(False)
-		cool(True)
-	elif temp - config.TEMP_MARGIN < temp_target:
-		heat(True)
-		cool(False)
-	else:
-		heat(False)
-		cool(False)
+class Controller(object):
+	#
+	def get_powerlinc(self):
+		if not self.powerlinc:
+			self.powerlinc = x10.powerlinc.PowerLincSerial(config.X10_TTY) 
 		
-	if humidity + config.HUMIDITY_MARGIN > humidity_target:
-		humidify(False)
-		dehumidify(True)
-	elif humidity - config.HUMIDITY_MARGIN < humidity_target:
-		humidify(True)
-		dehumidify(False)
-	else:
-		humidify(False)
-		dehumidify(False)
+		return self.powerlinc
+			
+	#
+	def humidify(self, dir):
+		"""Make humidity go up/down/off"""
+		logging.debug("Change humidity: " + str(dir))
+		if dir == Direction.UP:
+			self.get_powerlinc().send(x10.Cmd.ON, config.X10_CODE_HUMIDIFIER)
+		elif dir == Direction.DOWN:	
+			self.get_powerlinc().send(x10.Cmd.OFF, config.X10_CODE_HUMIDIFIER)
+			logging.error("Don't have a dehumidifier!")
+		else:
+			self.get_powerlinc().send(x10.Cmd.OFF, config.X10_CODE_HUMIDIFIER)
 	
-# We must init the onewire system
-ow.init(config.OWSERVER)
+	#
+	def heat(self, dir):
+		"""Make temperature go up/down/off"""
+		logging.debug("Change temperature: " + str(dir))
+		if dir == Direction.UP:
+			self.get_powerlinc().send(x10.Cmd.OFF, config.X10_CODE_REFRIGERATOR)
+			logging.error("Don't have a heater!")
+		elif dir == Direction.DOWN:	
+			self.get_powerlinc().send(x10.Cmd.ON, config.X10_CODE_REFRIGERATOR)
+		else:
+			self.get_powerlinc().send(x10.Cmd.OFF, config.X10_CODE_REFRIGERATOR)
+		
+	#
+	def seek_goals(self, temp, humidity, temp_target, humidity_target):
+		"""
+		Actually do something about it.
+		For the moment this will be a very dumb system.
+		"""
+		if temp + config.TEMP_MARGIN > temp_target:
+			self.heat(Direction.DOWN)
+		elif temp - config.TEMP_MARGIN < temp_target:
+			self.heat(Direction.UP)
+		else:
+			self.heat(Direction.OFF)
+			
+		if humidity + config.HUMIDITY_MARGIN > humidity_target:
+			self.humidify(Direction.DOWN)
+		elif humidity - config.HUMIDITY_MARGIN < humidity_target:
+			self.humidify(Direction.UP)
+		else:
+			self.humidify(Direction.OFF)
+	

@@ -70,7 +70,13 @@ class PowerLincSerial(x10.Controller):
 		"""Must be initialized with a tty device like '/dev/ttyUSB0'"""
 		self.serial = serial.Serial(tty, 9600, timeout=10)
 		
-	def send(self, command, house, unit):
+	def send(self, command, house_unit):
+		"""Shortcut for values like 'M1' and 'M2'"""
+		house = house_unit[0]
+		unit = house_unit[1:]
+		self.send_house_unit(command, house, unit)
+		
+	def send_house_unit(self, command, house, unit):
 		"""Send the command to the house and unit.  House is a letter A-P, unit is 0-16"""
 		self.serial.open()
 		self.make_ready()
