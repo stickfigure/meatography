@@ -42,6 +42,10 @@ Direction = util.enum("UP", "DOWN", "OFF")
 #
 class Controller(object):
 	#
+	def __init__(self):
+		self.powerlinc = None
+
+	#
 	def get_powerlinc(self):
 		if not self.powerlinc:
 			self.powerlinc = x10.powerlinc.PowerLincSerial(config.X10_TTY) 
