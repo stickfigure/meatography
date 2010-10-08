@@ -73,7 +73,7 @@ class PowerLincSerial(object):
 	def send(self, command, house_unit):
 		"""Shortcut for values like 'M1' and 'M2'"""
 		house = house_unit[0]
-		unit = house_unit[1:]
+		unit = int(house_unit[1:])
 		self.send_house_unit(command, house, unit)
 		
 	def send_house_unit(self, command, house, unit):
