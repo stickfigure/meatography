@@ -127,6 +127,7 @@ class PowerLincSerial(object):
 				else:
 					tries += 1
 					logging.error("Got NAK")
+					time.sleep(0.5)
 			else:
 				raise Exception, "Read unexpected byte " + hex(byte)
 		
