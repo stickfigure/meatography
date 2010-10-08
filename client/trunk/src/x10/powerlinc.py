@@ -126,7 +126,7 @@ class PowerLincSerial(object):
 					raise Exception, "Too many NAK responses"
 				else:
 					tries += 1
-					logging.error("Got NAK")
+					logging.debug("Got NAK")
 					time.sleep(0.5)
 			else:
 				raise Exception, "Read unexpected byte " + hex(byte)
