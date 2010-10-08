@@ -16,7 +16,7 @@ def test(tty):
 		return hex(ord(result[0]))
 	
 
-class PowerLincSerial(x10.Controller):
+class PowerLincSerial(object):
 	"""Controller for the 1132B PowerLinc Serial device"""
 	
 	# All raw x10 values get or'd with 0x40 for sending to PowerLinc
