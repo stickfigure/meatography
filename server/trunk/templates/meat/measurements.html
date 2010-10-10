@@ -10,13 +10,17 @@
     </h1>
     {% if measurements %}
         <table class="grid" id="wiki-list">
+        	<thead>
+        		<tr><th>Cabinent</th><th>Date/Time</th><th>Humidity</th><th>Temperature</th></tr>
+        	</thead>
             <tbody>
             {% set row_class = cycler('odd', 'even') %}
             {% for m in measurements %}
                 <tr class="{{ row_class.next() }}">
-                    <td>
-                    	{{ m }}
-                    </td>
+                    <td>{{ m.cid}}</td>
+                    <td>{{ m.when }}</td>
+                    <td>{{ m.humidity }}</td>
+                    <td>{{ m.temp }}</td>
                 </tr>
             {% endfor %}
             </tbody>

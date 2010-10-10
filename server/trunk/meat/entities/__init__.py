@@ -21,6 +21,8 @@ class Measurement(db.Expando):
  
     def kind(self):
         return "m"
+    
+    ''' Kind name to store in the datastore '''
     kind = classmethod(kind)
 
 class Account(db.Expando):
