@@ -36,11 +36,13 @@ logging.info(u"{0}\u00b0C, {1}% humidity".format(temp, humidity))
 params = {}
 params["ver"] = 1
 params["cid"] = config.CABINET_ID
-params["when"] = time.mktime(datetime.datetime.now().timetuple()) * 1000	# java time format
+params["when"] = int(time.mktime(datetime.datetime.now().timetuple()))	
 params["temp"] = temp
 params["humidity"] = humidity
 
 encoded_params = urllib.urlencode(params)
+
+#logging.info(encoded_params)
 
 raw_response = urllib2.urlopen(config.SERVER_URL, encoded_params)
 response = json.load(raw_response)
