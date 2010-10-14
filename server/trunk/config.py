@@ -10,7 +10,7 @@ config['tipfy'] = {
     # Enable debugger. It will be loaded only in development.
     'middleware': [
         'tipfy.ext.debugger.DebuggerMiddleware',
-        'tipfy.ext.appstats.AppstatsMiddleware',
+#        'tipfy.ext.appstats.AppstatsMiddleware',
 
     ],
     # Set the active apps.
@@ -21,9 +21,10 @@ config['tipfy'] = {
     ],
     # Set base paths for apps.
     'apps_entry_points': {
-        'meat':  '/meat',
         'moe.wiki':  '/wiki',
+        'meat':  '/meat',
     },
+#    'server_name' : 'davpix.com',
 }
 
 # Configuration for the 'tipfy.ext.session' module.

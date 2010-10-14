@@ -17,14 +17,28 @@
             {% set row_class = cycler('odd', 'even') %}
             {% for m in measurements %}
                 <tr class="{{ row_class.next() }}">
-                    <td>{{ m.cid}}</td>
-                    <td>{{ m.when }}</td>
-                    <td>{{ m.humidity }}</td>
-                    <td>{{ m.temp }}</td>
+                    <td>{{ m.cid }}</td>
+                    <td>{{ m.when.replace(tzinfo=tz_utc).astimezone(tz) }} </td>
+                    <td>{{ m.humidity }} %</td>
+                    <td>{{ m.temp * 9/5 + 32 }} F ({{ m.temp }}C)</td>
                 </tr>
             {% endfor %}
             </tbody>
-        </table>
+            {% if not is_first_page or next_page %}
+            <tfoot>
+                <tr>
+                    <td colspan="2">
+                        {% if not is_first_page %}
+                            &larr; <a href="javascript:history.back();">{{ _('previous page') }}</a>
+                        {% endif %}
+                        {% if not is_first_page and next_page %} | {% endif %}
+                        {% if next_page %}
+                            <a href="{{ url_for('measurements', start=next_page) }}">{{ _('next page') }}</a> &rarr;
+                        {% endif %}
+                    </td>
+                </tr>
+            </foot>
+            {% endif %}        </table>
     {% else %}
     	<p> no measurements yet </p>
     {% endif %}

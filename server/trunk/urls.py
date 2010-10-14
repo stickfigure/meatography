@@ -19,11 +19,12 @@ def get_rules():
     """
     entry_points = get_config('tipfy', 'apps_entry_points')
 
-    if get_config('moe', 'use_subdomain', False) or get_config('moe', 'subdomain_as_area', False):
-        kwargs = {'subdomain': '<area_name>'}
-    else:
-        kwargs = {'defaults': {'area_name': 'www'}}
+#    if get_config('moe', 'use_subdomain', False) or get_config('moe', 'subdomain_as_area', False):
+#        kwargs = {'subdomain': '<area_name>'}
+#    else:
+#        kwargs = {'defaults': {'area_name': 'www'}}
 
+    kwargs = {}
     rules = [
         # This is a dummy rule pointing to wiki start page. Replace it by
         # one pointing to a homepage handler.

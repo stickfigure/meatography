@@ -3,6 +3,9 @@ version: test
 runtime: python
 api_version: 1
 
+#builtins:
+#- datastore_admin: on
+
 handlers:
 
 - url: /(robots\.txt|favicon\.ico)

@@ -5,6 +5,10 @@ from pytz import UTC
 from tipfy import render_json_response
 from wtforms.ext.appengine.db import model_form
 from wtforms.form import Form
+from meat.entities import measurements_list_pager
+from tipfy.ext.i18n import get_timezone
+from google.appengine.ext import db
+from tipfy.ext.auth import AppEngineAuthMixin, admin_required
 
 class NewMeasurement(AreaRequestHandler):
     '''
@@ -31,11 +35,35 @@ class ResultStub(AreaRequestHandler):
         return render_json_response({ "status":0, "tempTarget": 50, "humidityTarget": 70 })
     def post(self):
         return self.get()
+
+class DeleteMeasurements(AreaRequestHandler, AppEngineAuthMixin):
+    '''
+    List all the measurements
+    '''
+    @admin_required
+    def get(self):
+        limit_arg = self.request.args.get('limit')
+        l = 450
+        
+        if limit_arg: 
+            l = int(limit_arg)
+        
+        db.delete(Measurement.all(keys_only=True).fetch(limit=l))
+        return self.redirect_to("measurements")
     
 class ListRawMeasurements(AreaRequestHandler):
     '''
     List all the measurements
     '''
     def get(self):
-        m = Measurement.all()
-        return self.render_template("meat/measurements.html", measurements = m)
+        curr_cursor = self.request.args.get('start')
+        ms, cursor = measurements_list_pager(cursor=curr_cursor, limit=60)
+        ctx = {
+            'measurements':     ms,
+            'is_first_page':    curr_cursor is None,
+            'next_page':        cursor,
+            'tz_utc':           UTC,
+            'tz':               get_timezone("America/Los_Angeles"),
+        }
+
+        return self.render_template("meat/measurements.html", **ctx)

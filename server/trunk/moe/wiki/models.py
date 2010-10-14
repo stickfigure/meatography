@@ -15,7 +15,8 @@ from google.appengine.ext import db
 from tipfy.ext.wtforms import Form, fields, validators
 
 from tipfy import cached_property
-from tipfy.ext.db import PickleProperty, get_property_dict, populate_entity
+from tipfy.ext.db import PickleProperty, get_property_dict, populate_entity,\
+    KeyProperty
 from tipfy.ext.i18n import lazy_gettext, _
 from tipfy.ext.auth.model import User
 
@@ -29,9 +30,9 @@ class WikiRevision(db.Model):
     # Modification date.
     updated = db.DateTimeProperty()
     # Creator of this page: a reference identifier to an authenticated user.
-    author_key = db.StringProperty()
+    author_key = KeyProperty()
     # Editor of this version: a reference identifier to an authenticated user.
-    editor_key = db.StringProperty()
+    editor_key = KeyProperty()
     # IP address of the editor or author.
     editor_ip = db.StringProperty()
     # Page title.
@@ -54,12 +55,12 @@ class WikiRevision(db.Model):
     @cached_property
     def author(self):
         if self.author_key:
-            return User.get(db.Key(self.author_key))
+            return User.get(self.author_key)
 
     @cached_property
     def editor(self):
         if self.editor_key:
-            return User.get(db.Key(self.editor_key))
+            return User.get(self.editor_key)
 
     @cached_property
     def version(self):
@@ -141,7 +142,7 @@ class WikiPage(db.Model):
     # Modification date.
     updated = db.DateTimeProperty(auto_now=True)
     # Key to the area where this page is published.
-    area_key = db.StringProperty()
+    area_key = KeyProperty()
     # The URL path to the page.
     path = db.StringProperty()
     # Direct parent path.
@@ -156,7 +157,7 @@ class WikiPage(db.Model):
     @classmethod
     def update(cls, area, path, **kwargs):
         """Creates or updates a page."""
-        kwargs['area_key'] = str(area.key())
+        kwargs['area_key'] = area.key()
         kwargs['path'] = path
         page = cls(key_name=cls.get_key_name(area, path), **kwargs)
         page.put()
@@ -199,7 +200,7 @@ class WikiToc(db.Model):
     # Modification date.
     updated = db.DateTimeProperty(auto_now=True)
     # Key to the area where this page is published.
-    area_key = db.StringProperty()
+    area_key = KeyProperty()
     # The URL path to the page.
     path = db.StringProperty()
     # Formatted toc contents.
@@ -239,7 +240,7 @@ def wiki_revisions_pager(revision, cursor=None, limit=20):
 def wiki_changes_pager(area, cursor=None, limit=20):
     def get_query(keys_only=False, cursor=None):
         return WikiPage.all(keys_only=keys_only, cursor=cursor) \
-                       .filter('area_key', str(area.key())) \
+                       .filter('area_key', area.key()) \
                        .order('-updated')
 
     query = get_query(cursor=cursor)
