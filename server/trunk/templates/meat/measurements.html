@@ -11,7 +11,20 @@
     {% if measurements %}
         <table class="grid" id="wiki-list">
         	<thead>
-        		<tr><th>Cabinent</th><th>Date/Time</th><th>Humidity</th><th>Temperature</th></tr>
+            {% if not is_first_page or next_page %}
+				<tr>
+				    <td colspan="2">
+				        {% if not is_first_page %}
+				            &larr; <a href="javascript:history.back();">{{ _('previous page') }}</a>
+				        {% endif %}
+				        {% if not is_first_page and next_page %} | {% endif %}
+				        {% if next_page %}
+				            <a href="{{ url_for('measurements', start=next_page) }}">{{ _('next page') }}</a> &rarr;
+				        {% endif %}
+				    </td>
+				</tr>
+            {% endif %}
+            	<tr><th>Cabinent</th><th>Date/Time</th><th>Humidity</th><th>Temperature</th></tr>
         	</thead>
             <tbody>
             {% set row_class = cycler('odd', 'even') %}
@@ -38,7 +51,8 @@
                     </td>
                 </tr>
             </foot>
-            {% endif %}        </table>
+            {% endif %}        
+		</table>
     {% else %}
     	<p> no measurements yet </p>
     {% endif %}
