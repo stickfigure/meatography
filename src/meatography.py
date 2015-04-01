@@ -1,10 +1,11 @@
 #!/usr/bin/python
 #
 # For the moment this just reports data to Google Analytics
+# Based on: http://nicomiceli.com/tracking-your-home-with-google-analytics/
 #
 # This script should be run from cron once per minute.
 
-# import urllib
+import urllib
 import urllib2
 import logging
 import hardware
@@ -24,9 +25,20 @@ logging.info(u"{0}\u00b0F, {1}% humidity".format(tempF, humidity))
 gaTempF = max(0, int(round(tempF*10)))
 gaHumidity = max(0, int(round(humidity*10)))
 
-# Send it to GA
-url1 = "http://www.google-analytics.com/collect?v=1&tid={0}&cid=1&t=event&ec=Environment&ea=temperature&el=${1}&ev={2}".format(config.GAID, config.LABEL, gaTempF)
-urllib2.urlopen(url1).close
+def hit_ga(action, value):
+    params = {
+        "v": "1",
+        "tid": config.GAID,
+        "cid": "1",
+        "t": "event",
+        "ec": "Environment",
+        "ea": action,
+        "el": config.LABEL,
+        "ev": value
+    }
+    data = urllib.urlencode(params)
+    req = urllib2.Request("http://www.google-analytics.com/collect", data)
+    urllib2.urlopen(req).close
 
-url2 = "http://www.google-analytics.com/collect?v=1&tid={0}&cid=1&t=event&ec=Environment&ea=humidity&el=${1}&ev={2}".format(config.GAID, config.LABEL, gaHumidity)
-urllib2.urlopen(url2).close
+hit_ga("temperature", gaTempF)
+hit_ga("humidity", gaHumidity)
