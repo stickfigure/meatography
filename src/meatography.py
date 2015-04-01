@@ -1,46 +1,32 @@
 #!/usr/bin/python
 #
-# Script which controlls a meatography cabinet, submitting temperature and humidity values
-# to a server and actuating control devices to maintain stable values.
+# For the moment this just reports data to Google Analytics
 #
 # This script should be run from cron once per minute.
 
 # import urllib
-# import urllib2
+import urllib2
 import logging
-# import datetime
-# import time
-# import json
 import hardware
+import config
 
 # Log if you want it
 logging.getLogger().setLevel(logging.DEBUG)
 
 # Get the real values
-temp = hardware.get_temp()
+tempC = hardware.get_temp()
+tempF = tempC * 1.8 + 32
 humidity = hardware.get_humidity()
 
-logging.info(u"{0}\u00b0C, {1}% humidity".format(temp, humidity))
+logging.info(u"{0}\u00b0F, {1}% humidity".format(tempF, humidity))
 
-# Make the call to the server
-# params = {}
-# params["ver"] = 1
-# params["cid"] = config.CABINET_ID
-# params["when"] = int(time.mktime(datetime.datetime.now().timetuple()))
-# params["temp"] = temp
-# params["humidity"] = humidity
+# need to make them into integers for GA, multiply by 10 to increase precision
+gaTempF = max(0, int(round(tempF*10)))
+gaHumidity = max(0, int(round(humidity*10)))
 
-# encoded_params = urllib.urlencode(params)
+# Send it to GA
+url1 = "http://www.google-analytics.com/collect?v=1&tid={0}&cid=1&t=event&ec=Environment&ea=temperature&el=${1}&ev={2}".format(config.GAID, config.LABEL, gaTempF)
+urllib2.urlopen(url1).close
 
-#logging.info(encoded_params)
-
-# raw_response = urllib2.urlopen(config.SERVER_URL, encoded_params)
-# response = json.load(raw_response)
-#
-# temp_target = float(response['tempTarget'])
-# humidity_target = float(response['humidityTarget'])
-
-#ctl = hardware.Controller()
-#ctl.seek_goals(temp, humidity, temp_target, humidity_target)
-
-
+url2 = "http://www.google-analytics.com/collect?v=1&tid={0}&cid=1&t=event&ec=Environment&ea=humidity&el=${1}&ev={2}".format(config.GAID, config.LABEL, gaHumidity)
+urllib2.urlopen(url2).close
