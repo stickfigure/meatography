@@ -38,6 +38,7 @@ def hit_ga(action, value):
     }
     data = urllib.urlencode(params)
     req = urllib2.Request("http://www.google-analytics.com/collect", data)
+    logging.info("Posting: " + str(req))
     urllib2.urlopen(req).close
 
 hit_ga("temperature", gaTempF)

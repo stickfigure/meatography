@@ -3,7 +3,7 @@ General stuff for controlling X10 components. This code has just been shoved her
 worked but it probably won't without some massaging.
 """
 import util
-import powerlinc
+from x10 import powerlinc
 import config
 import logging
 
