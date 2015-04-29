@@ -31,5 +31,5 @@ req.add_header('Content-Type', 'application/json')
 
 response = urllib2.urlopen(req, json.dumps(measurement))
 
-logging.info(config.SUBMIT + " responded with " + str(response))
+logging.info(config.SUBMIT + " responded with " + response.read())
 
